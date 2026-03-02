@@ -1,0 +1,32 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 003-create-product-size
+      author: Tural
+
+      changes:
+
+        - createTable:
+            tableName: product_size
+
+            columns:
+
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: product_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_product_size_product
+                    references: products(id)
+
+              - column:
+                  name: size
+                  type: INTEGER

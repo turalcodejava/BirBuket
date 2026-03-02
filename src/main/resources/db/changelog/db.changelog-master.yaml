@@ -2,3 +2,36 @@ databaseChangeLog:
   - include:
       file: 001-create-users.yaml
       relativeToChangelogFile: true
+
+  - include:
+      file: 002-create-addresses.yaml
+      relativeToChangelogFile: true
+
+  - include:
+      file: 007-create-product-category.yaml
+      relativeToChangelogFile: true
+
+  - include:
+      file: 008-create-product.yaml
+      relativeToChangelogFile: true
+
+  - include:
+      file: 003-create-product-size.yaml
+      relativeToChangelogFile: true
+
+  - include:
+      file: 004-create-product-review.yaml
+      relativeToChangelogFile: true
+
+  - include:
+      file: 005-create-product-item.yaml
+      relativeToChangelogFile: true
+
+  - include:
+      file: 006-create-product-image.yaml
+      relativeToChangelogFile: true
+
+
+  - include:
+      file: 009-create-doctor-order.yaml
+      relativeToChangelogFile: true

@@ -1,0 +1,40 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 007-create-product-category
+      author: Tural
+
+      changes:
+
+        - createTable:
+            tableName: product_categories
+
+            columns:
+
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: title
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+                    unique: true
+
+              - column:
+                  name: subtitle
+                  type: VARCHAR(200)
+                  constraints:
+                    nullable: false
+                    unique: true
+
+              - column:
+                  name: image_url
+                  type: VARCHAR(1000)
+                  constraints:
+                    nullable: false

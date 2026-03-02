@@ -1,0 +1,80 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 009-create-doctor-order
+      author: Tural
+
+      changes:
+
+        - createTable:
+            tableName: doctor_orders
+
+            columns:
+
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: full_address_line_snapshot
+                  type: VARCHAR(1000)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: plants_of_number
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: description
+                  type: TEXT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: doctor_visit_time
+                  type: DATE
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: order_time
+                  type: VARCHAR(50)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: note_for_doctor
+                  type: TEXT
+
+              - column:
+                  name: total_price
+                  type: DECIMAL(19,2)
+
+              - column:
+                  name: confirmation_number
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+
+              - column:
+                  name: address_id
+                  type: BIGINT
+                  constraints:
+                    foreignKeyName: fk_doctor_order_address
+                    references: addresses(id)
+
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP

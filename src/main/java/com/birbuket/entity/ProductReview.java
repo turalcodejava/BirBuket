@@ -5,8 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-@Data
-@Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -22,8 +22,11 @@ public class ProductReview {
     Integer rate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "produvt_id")
+    @JoinColumn(name = "product_id")
     Product product;
 
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     UserEntity user;
 }

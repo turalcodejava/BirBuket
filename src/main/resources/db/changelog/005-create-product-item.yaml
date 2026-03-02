@@ -1,0 +1,44 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 005-create-product-item
+      author: Tural
+
+      changes:
+
+        - createTable:
+            tableName: product_item
+
+            columns:
+
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+
+              - column:
+                  name: price
+                  type: DECIMAL(19,2)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: image_url
+                  type: VARCHAR(1000)
+                  constraints:
+                    nullable: false
+                    unique: true
+
+              - column:
+                  name: product_type
+                  type: VARCHAR(50)

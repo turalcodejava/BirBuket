@@ -11,8 +11,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
-@Builder
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -47,11 +47,9 @@ public class Product {
     boolean isSingle = false;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
-    @Builder.Default
     List<ProductImage> images = new ArrayList<>();
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    @Builder.Default
     List<ProductSize> productImages = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -59,6 +57,5 @@ public class Product {
     ProductCategory productCategory;
 
     @OneToMany(mappedBy = "product",cascade = CascadeType.ALL)
-    @Builder.Default
     List<ProductReview> productReviews = new ArrayList<>();
 }

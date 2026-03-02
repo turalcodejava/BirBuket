@@ -1,0 +1,73 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 008-create-products
+      author: Tural
+
+      changes:
+
+        - createTable:
+            tableName: products
+
+            columns:
+
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: product_name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+
+              - column:
+                  name: description
+                  type: TEXT
+
+              - column:
+                  name: composition
+                  type: TEXT
+
+              - column:
+                  name: price
+                  type: DECIMAL(19,2)
+
+              - column:
+                  name: discount_percentage
+                  type: DECIMAL(19,2)
+
+              - column:
+                  name: active
+                  type: BOOLEAN
+
+              - column:
+                  name: color
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: is_single
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+
+              - column:
+                  name: product_category_id
+                  type: BIGINT
+                  constraints:
+                    foreignKeyName: fk_product_category
+                    references: product_categories(id)
+
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+
+              - column:
+                  name: updated_at
+                  type: TIMESTAMP

@@ -6,7 +6,6 @@ import com.birbuket.enums.Role;
 import com.birbuket.enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -19,54 +18,53 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 @Table(name = "users")
 public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @Column(nullable = false)
-    String name;
+    private String name;
 
     @Column(nullable = false)
-    String surname;
+    private String surname;
 
     @Column(unique = true, nullable = false)
-    String email;
+    private String email;
 
     @Column(nullable = false, unique = true)
-    String phoneNumber;
+    private String phoneNumber;
 
     @Column(nullable = false, unique = true)
-    String username;
+    private String username;
 
     @Column(nullable = false)
-    String password;
+    private  String password;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    Gender gender;
+    private Gender gender;
 
-    LocalDate birthDate;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    Role role;
+    private LocalDate birthDate;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    UserStatus status;
+    private Role role;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private  UserStatus status;
 
     @CreationTimestamp
-    LocalDateTime createdAt;
+    private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    LocalDateTime updatedAt;
+    private LocalDateTime updatedAt;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    List<Addresses> addresses = new ArrayList<>();
+    private List<Addresses> addresses = new ArrayList<>();
 
 }
