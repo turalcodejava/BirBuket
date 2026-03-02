@@ -1,6 +1,8 @@
 spring:
   application:
     name: BirBuket
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
 
 
   datasource:
@@ -13,5 +15,5 @@ spring:
   jpa:
     open-in-view: false
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     show-sql: true
