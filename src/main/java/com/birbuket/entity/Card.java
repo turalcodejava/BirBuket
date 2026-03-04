@@ -5,22 +5,23 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
+
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@NoArgsConstructor
 @Entity
-public class ProductSize {
+@Table(name = "cards")
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class Card {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    Integer size;
-
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
-    Product product;
+    String fullName;
+    String cardNumber;
+    LocalDate expirationDate;
+    String cvv;
 }
