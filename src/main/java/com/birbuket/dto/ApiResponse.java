@@ -1,0 +1,31 @@
+package com.birbuket.dto;
+
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class ApiResponse<T> {
+
+    private boolean success;
+    private String message;
+    private T data;
+    private String errorCode;
+
+
+    public static <T> ApiResponse<T> success(T data) {
+        return ApiResponse.<T>builder()
+                .success(true)
+                .message("success")
+                .data(data)
+                .errorCode(null)
+                .build();
+    }
+
+
+}

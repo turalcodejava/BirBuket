@@ -1,9 +1,9 @@
 package com.birbuket.entity;
 
-
 import com.birbuket.enums.OrderTime;
 import com.birbuket.enums.PlantsOfNumber;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -28,29 +28,45 @@ public class DoctorOrder {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-
-    @Column(nullable = false)
+    @NotBlank(message = "Ünvan boş ola bilməz")
+    @Size(max = 255)
+    @Column(name = "full_address_line_snapshot", nullable = false, length = 255)
     String fullAddressLineSnapshot;
 
-    @Column(nullable = false)
+    @NotNull(message = "Bitki sayı seçilməlidir")
     @Enumerated(EnumType.STRING)
+    @Column(name = "plants_of_number", nullable = false)
     PlantsOfNumber plantsOfNumber;
 
-    @Column(nullable = false)
+    @NotBlank(message = "Təsvir boş ola bilməz")
+    @Size(max = 500)
+    @Column(nullable = false, length = 500)
     String description;
 
-    @Column(nullable = false)
+    @NotNull(message = "Həkim ziyarət tarixi boş ola bilməz")
+    @FutureOrPresent(message = "Tarix keçmiş ola bilməz")
+    @Column(name = "doctor_visit_time", nullable = false)
     LocalDate doctorVisitTime;
 
-    @Column(nullable = false)
+    @NotNull(message = "Order vaxtı seçilməlidir")
     @Enumerated(EnumType.STRING)
+    @Column(name = "order_time", nullable = false)
     OrderTime orderTime;
 
+    @Size(max = 500)
+    @Column(name = "note_for_doctor", length = 500)
     String noteForDoctor;
 
+    @PositiveOrZero(message = "Qiymət mənfi ola bilməz")
+    @Column(name = "total_price", precision = 10, scale = 2)
     BigDecimal totalPrice;
 
-    @Column(nullable = false, unique = true)
+    @NotBlank(message = "Confirmation number boş ola bilməz")
+    @Pattern(
+            regexp = "^[A-Z0-9]{8,20}$",
+            message = "Confirmation number yalnız böyük hərf və rəqəmdən ibarət olmalıdır"
+    )
+    @Column(name = "confirmation_number", nullable = false, unique = true, length = 20)
     String confirmationNumber;
 
     @ManyToOne(fetch = FetchType.LAZY)

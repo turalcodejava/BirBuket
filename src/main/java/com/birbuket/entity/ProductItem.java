@@ -1,8 +1,8 @@
 package com.birbuket.entity;
 
-
 import com.birbuket.enums.ProductType;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -14,24 +14,34 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
-@Table(name = "product_item")
-
-// Product for Render
+@Table(name = "product_items")
 public class ProductItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(nullable = false, unique = true)
+    @NotBlank(message = "Product name boş ola bilməz")
+    @Size(min = 2, max = 100, message = "Product name 2-100 simvol arası olmalıdır")
+    @Column(nullable = false, unique = true, length = 100)
     String name;
 
-    @Column(nullable = false)
+    @NotNull(message = "Price boş ola bilməz")
+    @Positive(message = "Price 0-dan böyük olmalıdır")
+    @Column(nullable = false, precision = 10, scale = 2)
     BigDecimal price;
 
-    @Column(nullable = false, unique = true)
+    @NotBlank(message = "Image URL boş ola bilməz")
+    @Size(max = 500)
+    @Pattern(
+            regexp = "^(http|https)://.*$",
+            message = "Image URL düzgün formatda olmalıdır"
+    )
+    @Column(nullable = false, unique = true, length = 500)
     String imageUrl;
 
+    @NotNull(message = "Product type boş ola bilməz")
     @Enumerated(EnumType.STRING)
-    ProductType  productType;
+    @Column(name = "product_type", nullable = false)
+    ProductType productType;
 }

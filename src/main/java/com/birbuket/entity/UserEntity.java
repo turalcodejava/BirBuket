@@ -1,17 +1,21 @@
 package com.birbuket.entity;
 
-
 import com.birbuket.enums.Gender;
 import com.birbuket.enums.Role;
 import com.birbuket.enums.UserStatus;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Data
@@ -20,51 +24,79 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "users")
-public class UserEntity {
+public class UserEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @NotBlank(message = "Name boş ola bilməz")
+    @Size(min = 2, max = 50)
+    @Pattern(regexp = "^[A-Za-zƏəĞğİıÖöŞşÜüÇç\\s]+$", message = "Name yalnız hərflərdən ibarət olmalıdır")
+    @Column(nullable = false, length = 50)
     private String name;
 
-    @Column(nullable = false)
+    @NotBlank(message = "Surname boş ola bilməz")
+    @Size(min = 2, max = 50)
+    @Pattern(regexp = "^[A-Za-zƏəĞğİıÖöŞşÜüÇç\\s]+$", message = "Surname yalnız hərflərdən ibarət olmalıdır")
+    @Column(nullable = false, length = 50)
     private String surname;
 
-    @Column(unique = true, nullable = false)
+    @NotBlank(message = "Email boş ola bilməz")
+    @Email(message = "Email düzgün formatda olmalıdır")
+    @Column(unique = true, nullable = false, length = 100)
     private String email;
 
-    @Column(nullable = false, unique = true)
+    @NotBlank(message = "Phone number boş ola bilməz")
+    @Pattern(regexp = "^\\+994[0-9]{9}$", message = "Telefon nömrəsi +994XXXXXXXXX formatında olmalıdır")
+    @Column(nullable = false, unique = true, length = 13)
     private String phoneNumber;
 
-    @Column(nullable = false, unique = true)
+    @NotBlank(message = "Username boş ola bilməz")
+    @Size(min = 3, max = 50)
+    @Column(nullable = false, unique = true, length = 50)
     private String username;
 
-    @Column(nullable = false)
-    private  String password;
+    @NotBlank(message = "Password boş ola bilməz")
+    @Size(min = 8, max = 100, message = "Password ən azı 8 simvol olmalıdır")
+    @Column(nullable = false, length = 100)
+    private String password;
 
+    @NotNull(message = "Gender seçilməlidir")
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Gender gender;
 
+    @Past(message = "BirthDate keçmiş tarix olmalıdır")
     private LocalDate birthDate;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private  UserStatus status;
+    private UserStatus status;
 
     @CreationTimestamp
+    @Column(updatable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Addresses> addresses = new ArrayList<>();
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return UserStatus.ACTIVE.equals(status);
+    }
 }

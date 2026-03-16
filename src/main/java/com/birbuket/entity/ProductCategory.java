@@ -1,7 +1,7 @@
 package com.birbuket.entity;
 
-
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -20,12 +20,22 @@ public class ProductCategory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(nullable = false,  unique = true,length = 50)
+    @NotBlank(message = "Title boş ola bilməz")
+    @Size(min = 2, max = 50, message = "Title 2-50 simvol arası olmalıdır")
+    @Column(nullable = false, unique = true, length = 50)
     String title;
 
-    @Column(nullable = false,  unique = true, length = 200)
+    @NotBlank(message = "Subtitle boş ola bilməz")
+    @Size(max = 200, message = "Subtitle maksimum 200 simvol ola bilər")
+    @Column(nullable = false, unique = true, length = 200)
     String subtitle;
 
-    @Column(nullable = false)
+    @NotBlank(message = "Image URL boş ola bilməz")
+    @Size(max = 500)
+    @Pattern(
+            regexp = "^(http|https)://.*$",
+            message = "Image URL düzgün formatda olmalıdır"
+    )
+    @Column(nullable = false, length = 500)
     String imageUrl;
 }
