@@ -1,6 +1,7 @@
 package com.birbuket.dto;
 
 import com.birbuket.enums.Gender;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.*;
@@ -8,7 +9,8 @@ import lombok.*;
 
 import java.time.LocalDate;
 
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -49,6 +51,6 @@ public class UserRegisterRequest {
     private Gender gender;
 
     @Past(message = "BirthDate keçmiş tarix olmalıdır")
-    @Pattern(regexp = "dd.MM.yyyy")
+    @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate birthDate;
 }

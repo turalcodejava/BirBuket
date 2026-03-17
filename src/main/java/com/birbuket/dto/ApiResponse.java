@@ -1,6 +1,7 @@
 package com.birbuket.dto;
 
 
+import com.birbuket.enums.ErrorCode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,6 +25,15 @@ public class ApiResponse<T> {
                 .message("success")
                 .data(data)
                 .errorCode(null)
+                .build();
+    }
+
+    public static <T> ApiResponse<T> error(ErrorCode errorCode, String message) {
+        return ApiResponse.<T>builder()
+                .success(false)
+                .message(message)
+                .data(null)
+                .errorCode(errorCode.getCode())
                 .build();
     }
 

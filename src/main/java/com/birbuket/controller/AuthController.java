@@ -4,6 +4,7 @@ import com.birbuket.dto.*;
 import com.birbuket.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,13 +23,13 @@ public class AuthController {
 
     @PostMapping("/register")
     @Operation(summary = "User registration")
-    public ResponseEntity<@NonNull ApiResponse<UserRegisterResponse>> registerUser(@RequestBody UserRegisterRequest request) {
+    public ResponseEntity<@NonNull ApiResponse<UserRegisterResponse>> registerUser(@Valid @RequestBody UserRegisterRequest request) {
         return ResponseEntity.ok().body(ApiResponse.success(authService.register(request)));
     }
 
     @PostMapping("/login")
     @Operation(summary = "User login")
-    public ResponseEntity<@NonNull ApiResponse<UserLoginResponse>> loginUser(@RequestBody UserLoginRequest request) {
+    public ResponseEntity<@NonNull ApiResponse<UserLoginResponse>> loginUser(@Valid @RequestBody UserLoginRequest request) {
         var response = authService.login(request);
         return ResponseEntity.ok().body(ApiResponse.success(response));
     }
