@@ -5,6 +5,7 @@ import com.birbuket.dto.UserLoginRequest;
 import com.birbuket.dto.UserLoginResponse;
 import com.birbuket.dto.UserRegisterRequest;
 import com.birbuket.dto.UserRegisterResponse;
+import com.birbuket.entity.RefreshToken;
 import com.birbuket.enums.Role;
 import com.birbuket.enums.UserStatus;
 import com.birbuket.exception.PasswordMismatchException;
@@ -13,6 +14,7 @@ import com.birbuket.exception.UserNotFoundException;
 import com.birbuket.mapper.UserMapper;
 import com.birbuket.repository.UserRepository;
 import com.birbuket.service.AuthService;
+import com.birbuket.service.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,8 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
+    private final RefreshTokenService refreshTokenService;
 
     @Override
     public UserRegisterResponse register(UserRegisterRequest request) {
@@ -63,7 +67,14 @@ public class AuthServiceImpl implements AuthService {
             log.warn("Password mismatch for user: {}", request.getUsername());
             throw new PasswordMismatchException("Password mismatch");
         }
+
+        String accessToken = jwtService.generateToken(user);
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getUsername());
         log.info("User logged in successfully: {}", user.getUsername());
-        return new UserLoginResponse(user.getUsername());
+        return UserLoginResponse.builder()
+                .username(user.getUsername())
+                .accessToken(accessToken)
+                .refreshToken(refreshToken.getToken())
+                .build();
     }
 }

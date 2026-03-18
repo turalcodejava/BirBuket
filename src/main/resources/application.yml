@@ -23,3 +23,8 @@ spring:
     swagger-ui:
       enabled: true
 
+jwt:
+  secret: Yml0YnVrZXQtZ3VsbGVyaW4tc2F0aXNpLW9ubGluZS1zZWhpZmVzaS11Y3VuLXNla3JldC1rZXk=
+  expiration: 6000
+  refresh-expiration: 604800000
+
