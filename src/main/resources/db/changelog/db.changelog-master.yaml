@@ -35,3 +35,7 @@ databaseChangeLog:
   - include:
       file: 009-create-doctor-order.yaml
       relativeToChangelogFile: true
+
+  - include:
+      file: refresh-token.yaml
+      relativeToChangelogFile: true

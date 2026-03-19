@@ -6,20 +6,25 @@ import com.birbuket.dto.UserLoginResponse;
 import com.birbuket.dto.UserRegisterRequest;
 import com.birbuket.dto.UserRegisterResponse;
 import com.birbuket.entity.RefreshToken;
+import com.birbuket.entity.UserEntity;
 import com.birbuket.enums.Role;
 import com.birbuket.enums.UserStatus;
 import com.birbuket.exception.PasswordMismatchException;
+import com.birbuket.exception.UnderageUserException;
 import com.birbuket.exception.UserAlreadyExistsException;
 import com.birbuket.exception.UserNotFoundException;
 import com.birbuket.mapper.UserMapper;
 import com.birbuket.repository.UserRepository;
 import com.birbuket.service.AuthService;
 import com.birbuket.service.RefreshTokenService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.Period;
 
 @Service
 @RequiredArgsConstructor
@@ -35,15 +40,9 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public UserRegisterResponse register(UserRegisterRequest request) {
         log.info("Attempting to register user: {}", request.getUsername());
-
-        if (!request.getPassword().equals(request.getConfirmPassword())) {
-            log.warn("Registration failed: password and confirmPassword do not match");
-            throw new PasswordMismatchException("Passwords don't match");
-        }
-        if (userRepository.existsByUsername(request.getUsername())) {
-            log.warn("User already exists with username: {}", request.getUsername());
-            throw new UserAlreadyExistsException("Username already exists with that name");
-        }
+        checkPasswordsMatch(request);
+        checkUserExists(request);
+        checkUnderage(request.getBirthDate());
         var user = userMapper.toUserEntity(request);
         user.setRole(Role.USER);
         user.setStatus(UserStatus.PENDING);
@@ -69,12 +68,56 @@ public class AuthServiceImpl implements AuthService {
         }
 
         String accessToken = jwtService.generateToken(user);
-        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user.getUsername());
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
         log.info("User logged in successfully: {}", user.getUsername());
         return UserLoginResponse.builder()
                 .username(user.getUsername())
                 .accessToken(accessToken)
                 .refreshToken(refreshToken.getToken())
+                .role(Role.USER)
                 .build();
+    }
+
+    @Override
+    @Transactional
+    public UserLoginResponse refresh(String refreshToken) {
+        RefreshToken verified = refreshTokenService.verifyRefreshToken(refreshToken);
+
+        UserEntity user = verified.getUser();
+        String newAccessToken = jwtService.generateToken(user);
+        RefreshToken newRefreshToken = refreshTokenService.createRefreshToken(user);
+
+        return UserLoginResponse.builder()
+                .accessToken(newAccessToken)
+                .refreshToken(newRefreshToken.getToken())
+                .username(user.getUsername())
+                .role(user.getRole())
+                .build();
+    }
+
+    private void checkPasswordsMatch(UserRegisterRequest request) {
+        if (!request.getPassword().equals(request.getConfirmPassword())) {
+            throw new PasswordMismatchException("Passwords do not match");
+        }
+    }
+
+    private void checkUserExists(UserRegisterRequest request) {
+        if (userRepository.existsByUsername(request.getUsername())) {
+            throw new UserAlreadyExistsException("Username already exists");
+        }
+
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new UserAlreadyExistsException("Email already exists");
+        }
+
+        if (userRepository.existsByPhoneNumber(request.getPhoneNumber())) {
+            throw new UserAlreadyExistsException("Phone number already exists");
+        }
+    }
+
+    private void checkUnderage(LocalDate date) {
+        if (Period.between(date, LocalDate.now()).getYears() < 18) {
+            throw new UnderageUserException("The user must be over 18 years old");
+        }
     }
 }
